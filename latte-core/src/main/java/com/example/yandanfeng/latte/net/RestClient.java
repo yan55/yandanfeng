@@ -1,10 +1,14 @@
 package com.example.yandanfeng.latte.net;
 
+import android.content.Context;
+
 import com.example.yandanfeng.latte.net.callback.IError;
 import com.example.yandanfeng.latte.net.callback.IFailure;
 import com.example.yandanfeng.latte.net.callback.IRequest;
 import com.example.yandanfeng.latte.net.callback.ISuccess;
 import com.example.yandanfeng.latte.net.callback.RequestCallback;
+import com.example.yandanfeng.latte.ui.LatteLoader;
+import com.example.yandanfeng.latte.ui.LoaderStyle;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -26,6 +30,8 @@ public class RestClient {
     private final IFailure FAILURE;
     private final IError ERROR;
     private final RequestBody BODY;
+    private final LoaderStyle LOADER_STYLE;
+    private final Context CONTEXT;
 
 
     public RestClient(String url,
@@ -34,7 +40,10 @@ public class RestClient {
                       ISuccess success,
                       IFailure failure,
                       IError error,
-                      RequestBody body) {
+                      RequestBody body,
+                      Context context,
+                      LoaderStyle loader_style
+    ) {
         URL = url;
         PARAWS.putAll(paraws);
         REQUEST = request;
@@ -42,6 +51,8 @@ public class RestClient {
         FAILURE = failure;
         ERROR = error;
         BODY = body;
+        CONTEXT = context;
+        LOADER_STYLE = loader_style;
     }
 
     public static RestClientBuilder builder() {
@@ -54,6 +65,11 @@ public class RestClient {
         Call<String> call = null;
         if (REQUEST != null) {
             REQUEST.onRequeststart();
+
+        }
+
+        if (LOADER_STYLE != null) {
+            LatteLoader.showLoading(CONTEXT, LOADER_STYLE);
 
         }
         switch (method) {
@@ -84,7 +100,13 @@ public class RestClient {
     }
 
     private Callback<String> getRequestCallback() {
-        return new RequestCallback(REQUEST, SUCCESS, FAILURE, ERROR);
+        return new RequestCallback(
+                REQUEST,
+                SUCCESS,
+                FAILURE,
+                ERROR,
+                LOADER_STYLE
+        );
     }
 
     public final void get() {
