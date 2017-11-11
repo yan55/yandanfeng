@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.yandanfeng.latte.app.Latte;
 import com.example.yandanfeng.latte.ec.icom.FontEcModule;
+import com.example.yandanfeng.latte.net.interceptors.DebugInterceptor;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
 /**
@@ -18,6 +19,7 @@ public class ExampleApp extends Application {
                 .withIcon(new FontAwesomeModule())
                 .withIcon(new FontEcModule())
                 .withApiHost("HTTP://127.0.0.1/")
+                .withInterceptor(new DebugInterceptor("index",R.raw.test))
                 .configure();
     }
 }
